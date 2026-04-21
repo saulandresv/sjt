@@ -1,1603 +1,1208 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SJTech — Soluciones Informáticas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet" />
-  <style>
-    /* ════════════════════════════════════════
-       RESET & TOKENS
-    ════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SJTech — Soluciones Informáticas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F2EEE5;
+  --bg2:#EAE4D6;
+  --paper:#FBF8F1;
+  --ink:#0B1524;
+  --ink2:#1C2536;
+  --muted:#6B7384;
+  --line:#0B15241A;
+  --line2:#0B152433;
+  --accent:#4F46E5;      /* electric indigo */
+  --accent-dark:#3730A3;
+  --coral:#FF5A3C;
+  --lime:#D8E84A;
+  --white:#fff;
+  --fd:'Bricolage Grotesque',serif;
+  --fb:'Inter',system-ui,sans-serif;
+  --fm:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--fb);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01","cv11";
+}
+::selection{background:var(--accent);color:var(--paper)}
 
-    :root {
-      --white:   #FFFFFF;
-      --cream:   #F7F5F2;
-      --stone:   #EDEAE5;
-      --ink:     #0E0E0E;
-      --ink2:    #2A2A2A;
-      --gray:    #6B6B6B;
-      --lgray:   #B0ADA8;
+/* ── Subtle paper texture ─────────── */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(11,21,36,0.035) 1px,transparent 1px);
+  background-size:3px 3px;
+  mix-blend-mode:multiply;
+  opacity:0.6;
+}
 
-      --v1:      #5B2EFF;   /* violet */
-      --v2:      #8B5CF6;
-      --c1:      #06D6A0;   /* teal */
-      --c2:      #00B4D8;   /* sky */
-      --coral:   #FF5757;
-      --gold:    #F4A261;
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
 
-      --grad:    linear-gradient(135deg, var(--v1) 0%, #A855F7 50%, var(--c2) 100%);
-      --grad2:   linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
-      --grad3:   linear-gradient(135deg, var(--coral) 0%, var(--gold) 100%);
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+.wrap{max-width:1360px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem);position:relative;z-index:2}
+.eyebrow{
+  font-family:var(--fm);
+  font-size:.72rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+}
+.eyebrow::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  display:inline-block;
+}
+.eyebrow--coral::before{background:var(--coral)}
+.eyebrow--lime::before{background:var(--ink)}
+.display{
+  font-family:var(--fd);
+  font-weight:700;
+  letter-spacing:-0.035em;
+  line-height:.94;
+  color:var(--ink);
+}
+.display em{font-style:italic;font-weight:500;color:var(--accent)}
+.display .line-through{position:relative;display:inline-block}
 
-      --r-sm:    12px;
-      --r-md:    20px;
-      --r-lg:    32px;
-      --r-xl:    48px;
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:.9rem clamp(1.25rem,4vw,3rem);
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all .3s ease;
+}
+nav.scrolled{
+  background:rgba(242,238,229,0.85);
+  backdrop-filter:blur(18px) saturate(1.4);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-family:var(--fd);font-weight:700;font-size:1.35rem;
+  letter-spacing:-.03em;color:var(--ink);
+}
+.brand-mark{
+  width:30px;height:30px;
+  background:var(--ink);
+  color:var(--paper);
+  display:grid;place-items:center;
+  font-family:var(--fd);font-weight:800;font-size:.85rem;
+  border-radius:8px;
+  position:relative;
+}
+.brand-mark::after{
+  content:'';position:absolute;
+  right:-3px;bottom:-3px;
+  width:8px;height:8px;background:var(--accent);border-radius:50%;
+}
+.nav-links{display:flex;align-items:center;gap:.25rem}
+.nav-links a{
+  font-size:.88rem;font-weight:500;color:var(--ink2);
+  padding:.5rem .95rem;border-radius:99px;
+  transition:background .2s;
+}
+.nav-links a:hover{background:rgba(11,21,36,0.06)}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.88rem;font-weight:600;
+  color:var(--paper);background:var(--ink);
+  padding:.7rem 1.15rem .7rem 1.25rem;
+  border-radius:99px;
+  transition:transform .2s,background .2s;
+}
+.nav-cta:hover{background:var(--accent);transform:translateY(-1px)}
+.nav-cta svg{width:14px;height:14px}
+.hamburger{display:none;width:42px;height:42px;border:1px solid var(--line2);background:transparent;border-radius:99px;align-items:center;justify-content:center}
+.hamburger span{display:block;width:16px;height:1.5px;background:var(--ink);position:relative}
+.hamburger span::before,.hamburger span::after{content:'';position:absolute;left:0;width:16px;height:1.5px;background:var(--ink)}
+.hamburger span::before{top:-5px}.hamburger span::after{top:5px}
 
-      --shadow:  0 4px 24px rgba(0,0,0,0.07);
-      --shadow2: 0 16px 64px rgba(91,46,255,0.18);
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero{
+  position:relative;padding:9rem 0 5rem;overflow:hidden;
+}
+.hero-top{
+  display:grid;grid-template-columns:1fr auto;gap:2rem;
+  align-items:end;margin-bottom:3rem;
+}
+.hero-tagline{max-width:620px}
+.hero-tagline .meta{
+  display:flex;align-items:center;gap:1rem;
+  font-family:var(--fm);font-size:.72rem;letter-spacing:.08em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
+.hero-tagline .meta::after{
+  content:'';flex:1;height:1px;background:var(--line2);
+}
+.hero-tagline p{
+  font-size:1.05rem;color:var(--ink2);max-width:460px;line-height:1.7;
+}
+.hero-tagline p strong{color:var(--ink);font-weight:600}
 
-      --fh: 'Syne', sans-serif;
-      --fb: 'Manrope', sans-serif;
-      --fm: 'Space Mono', monospace;
-    }
+.hero-title{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(3.5rem,11vw,10.5rem);
+  line-height:.88;letter-spacing:-0.045em;
+  color:var(--ink);
+  margin:1rem 0 2.5rem;
+}
+.hero-title .row{display:block;position:relative}
+.hero-title .row-2{padding-left:clamp(2rem,12vw,9rem);display:flex;align-items:center;gap:.4em}
+.hero-title em{
+  font-style:italic;font-weight:500;color:var(--accent);
+  position:relative;display:inline-block;
+}
+.hero-title em::after{
+  content:'';position:absolute;left:0;right:0;bottom:.12em;
+  height:.06em;background:var(--coral);
+  transform:scaleX(0);transform-origin:left;
+  animation:underline 1.2s .8s cubic-bezier(.77,0,.175,1) forwards;
+}
+@keyframes underline{to{transform:scaleX(1)}}
 
-    html { scroll-behavior: smooth; }
+.hero-title .chip{
+  display:inline-flex;align-items:center;
+  font-family:var(--fm);font-size:.85rem;font-weight:500;
+  letter-spacing:0;text-transform:none;color:var(--paper);
+  background:var(--ink);
+  padding:.4rem .9rem;border-radius:99px;
+  vertical-align:middle;
+  gap:.45rem;
+  white-space:nowrap;
+}
+.hero-title .chip::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--lime);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
 
-    body {
-      background: var(--cream);
-      color: var(--ink);
-      font-family: var(--fb);
-      font-size: 16px;
-      line-height: 1.65;
-      overflow-x: hidden;
-    }
+.hero-actions-wrap{
+  display:grid;grid-template-columns:auto 1fr;gap:3rem;
+  align-items:center;padding-top:2.5rem;
+  border-top:1px solid var(--line2);
+}
+.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:.65rem;
+  font-size:.92rem;font-weight:600;
+  padding:.95rem 1.5rem;
+  border-radius:99px;
+  transition:all .22s;
+  border:1px solid transparent;
+}
+.btn-primary{background:var(--accent);color:var(--paper)}
+.btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px)}
+.btn-primary svg{transition:transform .2s}
+.btn-primary:hover svg{transform:translate(3px,-3px)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn-ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
-    /* ════════════════════════════════════════
-       BLOBS BG
-    ════════════════════════════════════════ */
-    .blob-wrap {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.25;
-    }
-    .blob-1 {
-      width: 600px; height: 600px;
-      background: var(--v1);
-      top: -200px; right: -100px;
-      animation: drift1 18s ease-in-out infinite alternate;
-    }
-    .blob-2 {
-      width: 400px; height: 400px;
-      background: var(--c1);
-      bottom: 10%; left: -100px;
-      animation: drift2 14s ease-in-out infinite alternate;
-    }
-    .blob-3 {
-      width: 300px; height: 300px;
-      background: var(--coral);
-      top: 50%; right: 20%;
-      animation: drift1 20s ease-in-out infinite alternate-reverse;
-    }
-    @keyframes drift1 {
-      from { transform: translate(0, 0) scale(1); }
-      to   { transform: translate(40px, 60px) scale(1.1); }
-    }
-    @keyframes drift2 {
-      from { transform: translate(0, 0) scale(1); }
-      to   { transform: translate(-30px, 40px) scale(1.05); }
-    }
+.hero-stats{
+  display:flex;gap:clamp(1rem,3vw,2.5rem);flex-wrap:wrap;
+}
+.hero-stat{display:flex;flex-direction:column;gap:.1rem}
+.hero-stat-val{
+  font-family:var(--fd);font-weight:700;font-size:2rem;
+  letter-spacing:-.03em;line-height:1;color:var(--ink);
+}
+.hero-stat-val sup{font-size:.55em;color:var(--accent);vertical-align:top;margin-left:2px}
+.hero-stat-lbl{
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.08em;
+  color:var(--muted);text-transform:uppercase;margin-top:.2rem;
+}
 
-    /* ════════════════════════════════════════
-       NAV
-    ════════════════════════════════════════ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      padding: 1rem 5vw;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      transition: all 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(247,245,242,0.85);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
-    }
+/* Hero side widget */
+.hero-widget{
+  background:var(--ink);color:var(--paper);
+  border-radius:20px;
+  padding:1.25rem;width:280px;
+  position:relative;
+  transform:rotate(2deg);
+}
+.hero-widget::before{
+  content:'';position:absolute;inset:0;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.06);
+  pointer-events:none;
+}
+.hw-head{
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.1em;
+  color:rgba(255,255,255,0.45);text-transform:uppercase;
+  margin-bottom:.9rem;
+}
+.hw-head .dot{
+  width:6px;height:6px;background:var(--lime);border-radius:50%;
+  box-shadow:0 0 0 4px rgba(216,232,74,0.12);
+  display:inline-block;margin-right:.4rem;vertical-align:middle;
+}
+.hw-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.55rem 0;
+  border-top:1px solid rgba(255,255,255,0.06);
+  font-size:.85rem;
+}
+.hw-row:first-of-type{border-top:0;padding-top:0}
+.hw-row span:first-child{color:rgba(255,255,255,0.55);font-family:var(--fm);font-size:.75rem}
+.hw-row b{font-weight:600;color:var(--paper);font-family:var(--fd);font-size:.95rem}
+.hw-row b.ok{color:var(--lime)}
+.hw-bar{
+  height:4px;background:rgba(255,255,255,0.08);
+  border-radius:99px;margin-top:.9rem;overflow:hidden;
+}
+.hw-bar span{
+  display:block;height:100%;
+  width:94%;
+  background:linear-gradient(90deg,var(--lime),var(--coral));
+  border-radius:99px;
+  animation:barmove 3s ease-in-out infinite alternate;
+}
+@keyframes barmove{from{width:70%}to{width:97%}}
 
-    .logo {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: var(--ink);
-      text-decoration: none;
-      letter-spacing: -0.03em;
-    }
-    .logo b {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+/* ═══════════════════════════════════════
+   MARQUEE
+═══════════════════════════════════════ */
+.marquee{
+  background:var(--ink);
+  color:var(--paper);
+  overflow:hidden;position:relative;
+  border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  padding:1.3rem 0;
+  transform:rotate(-1.2deg);
+  margin:3rem -2rem;
+}
+.marquee::before,.marquee::after{
+  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;
+  pointer-events:none;
+}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
+.marquee::after{right:0;background:linear-gradient(-90deg,var(--ink),transparent)}
+.marquee-track{display:flex;width:max-content;animation:mq 32s linear infinite;gap:0}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{
+  font-family:var(--fd);font-weight:700;font-size:clamp(1.4rem,3vw,2rem);
+  letter-spacing:-.02em;
+  padding:0 1.4rem;display:inline-flex;align-items:center;gap:1.4rem;
+  white-space:nowrap;
+}
+.marquee-item svg{flex-shrink:0;opacity:.8}
+.marquee-item em{font-style:italic;font-weight:500;color:var(--lime)}
 
-    .nav-center {
-      display: flex;
-      gap: 0.25rem;
-      background: var(--white);
-      border-radius: 50px;
-      padding: 0.3rem;
-      box-shadow: var(--shadow);
-    }
-    .nav-center a {
-      font-family: var(--fb);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--gray);
-      text-decoration: none;
-      padding: 0.45rem 1.1rem;
-      border-radius: 40px;
-      transition: all 0.2s;
-    }
-    .nav-center a:hover { color: var(--ink); background: var(--cream); }
+/* ═══════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════ */
+section{position:relative;z-index:1}
+.sec{padding:clamp(5rem,10vw,9rem) 0}
+.sec--paper{background:var(--paper)}
+.sec--ink{background:var(--ink);color:var(--paper)}
+.sec--ink .display{color:var(--paper)}
+.sec--ink .eyebrow{color:rgba(255,255,255,0.55)}
+.sec--ink .eyebrow::before{background:var(--lime)}
 
-    .nav-btn {
-      font-family: var(--fb);
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: var(--white);
-      background: var(--ink);
-      padding: 0.6rem 1.4rem;
-      border-radius: 50px;
-      text-decoration: none;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .nav-btn:hover { background: var(--v1); transform: translateY(-1px); }
+.sec-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+  align-items:end;margin-bottom:4rem;
+}
+.sec-head h2{font-size:clamp(2.4rem,5.5vw,4.5rem)}
+.sec-head .sec-sub{
+  font-size:1rem;color:var(--muted);max-width:440px;
+  line-height:1.7;
+}
+.sec--ink .sec-sub{color:rgba(255,255,255,0.55)}
 
-    .hamburger {
-      display: none;
-      background: var(--white);
-      border: none;
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 5px;
-      box-shadow: var(--shadow);
-    }
-    .hamburger span {
-      display: block;
-      width: 18px; height: 2px;
-      background: var(--ink);
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
+/* ═══════════════════════════════════════
+   SERVICES
+═══════════════════════════════════════ */
+.svc-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:1rem;
+}
+.svc{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:1.8rem;
+  position:relative;
+  transition:transform .3s cubic-bezier(.2,.9,.3,1.2),box-shadow .3s;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  min-height:300px;
+}
+.svc:hover{transform:translateY(-4px);box-shadow:0 20px 40px -20px rgba(11,21,36,0.18)}
+.svc.s1{grid-column:span 5;background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.svc.s2{grid-column:span 4}
+.svc.s3{grid-column:span 3;background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.svc.s4{grid-column:span 4}
+.svc.s5{grid-column:span 4;background:var(--coral);color:var(--paper);border-color:var(--coral)}
+.svc.s6{grid-column:span 4;background:var(--bg2)}
 
-    /* ════════════════════════════════════════
-       HERO
-    ════════════════════════════════════════ */
-    .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 9rem 5vw 5rem;
-      gap: 2rem;
-    }
+.svc-tag{
+  font-family:var(--fm);font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.6;
+}
+.svc-num{
+  position:absolute;top:1.5rem;right:1.6rem;
+  font-family:var(--fm);font-size:.72rem;
+  letter-spacing:.1em;opacity:.5;
+}
+.svc-ic{
+  width:56px;height:56px;border-radius:16px;
+  background:rgba(11,21,36,0.06);
+  display:grid;place-items:center;margin-bottom:auto;
+}
+.svc.s1 .svc-ic,.svc.s3 .svc-ic,.svc.s5 .svc-ic{background:rgba(255,255,255,0.1)}
+.svc-ic svg{width:26px;height:26px;stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.svc.s1 .svc-ic svg,.svc.s3 .svc-ic svg,.svc.s5 .svc-ic svg{stroke:var(--paper)}
+.svc-title{
+  font-family:var(--fd);font-weight:700;
+  font-size:1.4rem;letter-spacing:-.025em;
+  line-height:1.1;margin-top:2.5rem;
+}
+.svc.s1 .svc-title,.svc-big .svc-title{font-size:1.9rem}
+.svc-desc{
+  font-size:.9rem;line-height:1.6;margin-top:.75rem;
+  opacity:.75;
+}
+.svc-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.25rem}
+.chip{
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.05em;
+  padding:.3rem .7rem;border-radius:99px;
+  border:1px solid currentColor;opacity:.6;
+}
+.svc-arrow{
+  position:absolute;bottom:1.5rem;right:1.5rem;
+  width:36px;height:36px;border-radius:99px;
+  background:rgba(11,21,36,0.06);
+  display:grid;place-items:center;
+  transition:transform .3s, background .3s;
+}
+.svc:hover .svc-arrow{transform:rotate(-45deg) scale(1.1);background:var(--ink);color:var(--paper)}
+.svc.s1 .svc-arrow,.svc.s3 .svc-arrow,.svc.s5 .svc-arrow{background:rgba(255,255,255,0.12);color:var(--paper)}
+.svc.s1:hover .svc-arrow{background:var(--lime);color:var(--ink)}
+.svc.s3:hover .svc-arrow{background:var(--paper);color:var(--accent)}
+.svc.s5:hover .svc-arrow{background:var(--ink);color:var(--paper)}
+.svc-arrow svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--white);
-      border-radius: 50px;
-      padding: 0.4rem 1rem 0.4rem 0.5rem;
-      box-shadow: var(--shadow);
-      font-family: var(--fm);
-      font-size: 0.72rem;
-      color: var(--gray);
-      letter-spacing: 0.05em;
-      opacity: 0;
-      animation: popIn 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) forwards;
-    }
-    .hero-badge-dot {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: var(--grad);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-    }
+/* ═══════════════════════════════════════
+   NOSOTROS
+═══════════════════════════════════════ */
+.about-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:4rem;align-items:start}
+.about-big{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(2.4rem,5vw,4rem);letter-spacing:-.035em;line-height:.98;
+  color:var(--paper);
+}
+.about-big em{font-style:italic;font-weight:500;color:var(--lime)}
+.about-sub{
+  margin-top:1.5rem;color:rgba(255,255,255,0.6);
+  font-size:1rem;max-width:500px;line-height:1.7;
+}
 
-    .hero-title {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: clamp(2.8rem, 8vw, 6.5rem);
-      line-height: 1.0;
-      letter-spacing: -0.04em;
-      color: var(--ink);
-      max-width: 900px;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.25s ease forwards;
-    }
-    .hero-title .grad-text {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+.about-stats{
+  margin-top:3rem;display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;border-top:1px solid rgba(255,255,255,0.1);
+}
+.about-stat{
+  padding:1.75rem 1rem 0 0;
+  border-right:1px solid rgba(255,255,255,0.1);
+}
+.about-stat:last-child{border-right:0;padding-right:0}
+.about-stat-val{
+  font-family:var(--fd);font-weight:700;
+  font-size:2.6rem;letter-spacing:-.04em;line-height:1;
+  color:var(--paper);
+}
+.about-stat-val .sup{color:var(--coral);font-size:.55em;vertical-align:top}
+.about-stat-lbl{
+  font-family:var(--fm);font-size:.7rem;letter-spacing:.08em;
+  color:rgba(255,255,255,0.5);text-transform:uppercase;
+  margin-top:.4rem;
+}
 
-    .hero-sub {
-      max-width: 560px;
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: var(--gray);
-      line-height: 1.8;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.4s ease forwards;
-    }
+.feat-list{display:flex;flex-direction:column;gap:0}
+.feat{
+  display:grid;grid-template-columns:40px 1fr auto;gap:1.25rem;
+  padding:1.5rem 0;border-top:1px solid rgba(255,255,255,0.1);
+  align-items:start;
+}
+.feat:last-child{border-bottom:1px solid rgba(255,255,255,0.1)}
+.feat-num{
+  font-family:var(--fm);font-size:.8rem;
+  color:var(--lime);letter-spacing:.05em;padding-top:.2rem;
+}
+.feat-body h3{
+  font-family:var(--fd);font-weight:600;
+  font-size:1.15rem;letter-spacing:-.02em;
+  color:var(--paper);margin-bottom:.25rem;
+}
+.feat-body p{
+  font-size:.88rem;color:rgba(255,255,255,0.55);line-height:1.65;
+}
+.feat-ic svg{width:22px;height:22px;stroke:rgba(255,255,255,0.4);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;margin-top:.25rem}
 
-    .hero-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.55s ease forwards;
-    }
+/* ═══════════════════════════════════════
+   PROCESO
+═══════════════════════════════════════ */
+.proc-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  margin-top:1rem;border-top:1px solid var(--line2);
+}
+.proc{
+  padding:2.5rem 1.5rem 2rem 0;
+  border-right:1px dashed var(--line2);
+  position:relative;
+  transition:background .3s;
+}
+.proc:last-child{border-right:0}
+.proc:hover{background:rgba(79,70,229,0.03)}
+.proc-num{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(3rem,6vw,5rem);letter-spacing:-.05em;line-height:1;
+  color:var(--ink);
+  position:relative;display:inline-block;
+}
+.proc-num .slash{color:var(--accent);margin:0 .1em;font-weight:400}
+.proc h3{
+  font-family:var(--fd);font-weight:700;font-size:1.25rem;
+  letter-spacing:-.02em;margin:1.5rem 0 .5rem;
+}
+.proc p{font-size:.9rem;color:var(--muted);line-height:1.65;max-width:280px}
+.proc-duration{
+  position:absolute;top:2.5rem;right:1.5rem;
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.08em;
+  color:var(--muted);text-transform:uppercase;
+}
 
-    .btn-main {
-      font-family: var(--fb);
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--white);
-      background: var(--grad);
-      padding: 0.85rem 2rem;
-      border-radius: 50px;
-      text-decoration: none;
-      box-shadow: var(--shadow2);
-      transition: all 0.25s;
-      display: inline-block;
-    }
-    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 20px 60px rgba(91,46,255,0.28); }
+/* ═══════════════════════════════════════
+   TESTIMONIOS
+═══════════════════════════════════════ */
+.tst-grid{
+  display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;
+}
+.tst{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:24px;padding:2.5rem;
+  display:flex;flex-direction:column;gap:2rem;
+  justify-content:space-between;
+}
+.tst.hero-tst{
+  background:var(--lime);border-color:var(--lime);color:var(--ink);
+  grid-row:span 2;
+}
+.tst-mark svg{width:32px;height:32px;stroke:currentColor;stroke-width:1.3;fill:none}
+.tst-quote{
+  font-family:var(--fd);font-weight:500;font-style:italic;
+  font-size:1.35rem;line-height:1.35;letter-spacing:-.015em;
+}
+.tst.hero-tst .tst-quote{font-size:1.75rem}
+.tst-foot{display:flex;align-items:center;gap:.9rem}
+.tst-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--ink);color:var(--paper);
+  display:grid;place-items:center;
+  font-family:var(--fd);font-weight:700;font-size:.95rem;
+}
+.tst.hero-tst .tst-avatar{background:var(--ink);color:var(--lime)}
+.tst-name{font-weight:600;font-size:.95rem;letter-spacing:-.01em}
+.tst-role{font-family:var(--fm);font-size:.72rem;letter-spacing:.05em;color:var(--muted);margin-top:.1rem}
+.tst.hero-tst .tst-role{color:rgba(11,21,36,0.55)}
+.tst-rating{display:flex;gap:2px}
+.tst-rating svg{width:14px;height:14px;fill:currentColor}
 
-    .btn-outline {
-      font-family: var(--fb);
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--ink);
-      background: var(--white);
-      padding: 0.85rem 2rem;
-      border-radius: 50px;
-      text-decoration: none;
-      box-shadow: var(--shadow);
-      transition: all 0.25s;
-      display: inline-block;
-    }
-    .btn-outline:hover { transform: translateY(-2px); background: var(--stone); }
+/* ═══════════════════════════════════════
+   CTA + CONTACT
+═══════════════════════════════════════ */
+.cta-band{
+  background:var(--ink);color:var(--paper);
+  border-radius:32px;
+  padding:clamp(2.5rem,6vw,5rem);
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+  align-items:center;
+  position:relative;overflow:hidden;
+}
+.cta-band::before{
+  content:'';position:absolute;
+  top:-40%;right:-20%;width:600px;height:600px;
+  background:radial-gradient(circle,rgba(79,70,229,0.35),transparent 65%);
+  pointer-events:none;
+}
+.cta-band::after{
+  content:'';position:absolute;
+  bottom:-30%;left:-15%;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(255,90,60,0.25),transparent 70%);
+  pointer-events:none;
+}
+.cta-title{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(2.2rem,4.5vw,3.4rem);
+  letter-spacing:-.035em;line-height:1;position:relative;z-index:2;
+}
+.cta-title em{font-style:italic;font-weight:500;color:var(--lime)}
+.cta-side{position:relative;z-index:2;display:flex;flex-direction:column;gap:1rem}
+.cta-side p{color:rgba(255,255,255,0.6);line-height:1.7;font-size:.95rem}
+.cta-side-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}
+.btn-lime{background:var(--lime);color:var(--ink)}
+.btn-lime:hover{background:var(--paper);transform:translateY(-2px)}
+.btn-dark-ghost{color:var(--paper);border:1px solid rgba(255,255,255,0.2)}
+.btn-dark-ghost:hover{background:rgba(255,255,255,0.06)}
 
-    /* floating cards */
-    .hero-cards {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 1rem;
-      opacity: 0;
-      animation: fadeUp 0.7s 0.7s ease forwards;
-    }
-    .mini-card {
-      background: var(--white);
-      border-radius: var(--r-md);
-      padding: 1rem 1.4rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      box-shadow: var(--shadow);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--ink2);
-      white-space: nowrap;
-    }
-    .mini-card-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-    .mc-v { background: rgba(91,46,255,0.1); }
-    .mc-t { background: rgba(6,214,160,0.1); }
-    .mc-c { background: rgba(255,87,87,0.12); }
-    .mc-s { background: rgba(0,180,216,0.1); }
+/* Contacto */
+.contact-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start}
+.contact-info-list{display:flex;flex-direction:column;gap:.5rem;margin-top:2rem}
+.cinfo{
+  display:grid;grid-template-columns:40px 1fr;gap:1rem;
+  padding:1.15rem 0;align-items:center;
+  border-top:1px solid var(--line2);
+}
+.cinfo:last-child{border-bottom:1px solid var(--line2)}
+.cinfo-ic{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--paper);border:1px solid var(--line);
+  display:grid;place-items:center;
+}
+.cinfo-ic svg{width:16px;height:16px;stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cinfo-lbl{font-family:var(--fm);font-size:.68rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.cinfo-val{font-size:.92rem;font-weight:500;color:var(--ink);margin-top:.05rem}
 
-    /* scroll indicator */
-    .scroll-hint {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      opacity: 0;
-      animation: fadeIn 1s 1.2s forwards;
-    }
-    .scroll-hint span {
-      font-family: var(--fm);
-      font-size: 0.65rem;
-      color: var(--lgray);
-      letter-spacing: 0.15em;
-    }
-    .scroll-arrow {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--stone);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: var(--lgray);
-      animation: bounce 2s infinite;
-    }
-    @keyframes bounce {
-      0%,100% { transform: translateY(0); }
-      50%      { transform: translateY(6px); }
-    }
+.form-wrap{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:2.25rem;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.fgroup{display:flex;flex-direction:column;gap:.45rem}
+.fgroup.full{grid-column:1/-1}
+.flabel{
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:.35rem;
+}
+.flabel .req{color:var(--coral)}
+.finput,.fselect,.ftxt{
+  width:100%;background:var(--bg);
+  border:1px solid var(--line);border-radius:12px;
+  padding:.85rem 1rem;
+  font:500 .92rem var(--fb);
+  color:var(--ink);outline:none;
+  transition:all .2s;
+}
+.finput:focus,.fselect:focus,.ftxt:focus{
+  border-color:var(--accent);background:var(--paper);
+  box-shadow:0 0 0 4px rgba(79,70,229,0.08);
+}
+.fselect{appearance:none;cursor:pointer;padding-right:2.5rem;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230B1524' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 1rem center;}
+.ftxt{resize:vertical;min-height:110px;line-height:1.6}
+.form-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;margin-top:1.5rem;flex-wrap:wrap;
+}
+.form-foot small{font-family:var(--fm);font-size:.7rem;color:var(--muted)}
+.fsubmit{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font:600 .92rem var(--fb);
+  background:var(--ink);color:var(--paper);
+  border:none;padding:.9rem 1.6rem;border-radius:99px;
+  transition:background .22s, transform .22s;
+}
+.fsubmit:hover:not(:disabled){background:var(--accent);transform:translateY(-2px)}
+.fsubmit:disabled{opacity:.7;cursor:wait}
+.fsubmit svg{width:14px;height:14px}
 
-    /* ════════════════════════════════════════
-       STRIP / LOGOS
-    ════════════════════════════════════════ */
-    .strip {
-      position: relative;
-      z-index: 1;
-      background: var(--white);
-      padding: 1.5rem 0;
-      overflow: hidden;
-      border-top: 1px solid var(--stone);
-      border-bottom: 1px solid var(--stone);
-    }
-    .strip-track {
-      display: flex;
-      width: max-content;
-      animation: slide 25s linear infinite;
-    }
-    @keyframes slide {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-    .strip-item {
-      padding: 0 2.5rem;
-      font-family: var(--fm);
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      color: var(--lgray);
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      white-space: nowrap;
-    }
-    .strip-sep {
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--v1);
-      opacity: 0.4;
-      flex-shrink: 0;
-    }
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{
+  background:var(--ink);color:rgba(255,255,255,0.6);
+  padding:5rem 0 2rem;position:relative;z-index:2;
+}
+footer::before{
+  content:'SJTECH';
+  position:absolute;left:50%;bottom:-2rem;transform:translateX(-50%);
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(8rem,22vw,22rem);
+  letter-spacing:-.06em;line-height:.8;
+  color:rgba(255,255,255,0.04);
+  pointer-events:none;white-space:nowrap;
+  user-select:none;
+}
+.foot-top{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:3rem;
+  padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.08);
+  margin-bottom:2rem;position:relative;z-index:2;
+}
+.foot-brand .brand{color:var(--paper)}
+.foot-brand p{font-size:.88rem;max-width:260px;margin-top:1rem;line-height:1.7}
+.foot-col h4{font-family:var(--fd);font-weight:700;font-size:.95rem;color:var(--paper);margin-bottom:1rem}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.foot-col a{font-size:.88rem;color:rgba(255,255,255,0.5);transition:color .2s}
+.foot-col a:hover{color:var(--lime)}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+  font-family:var(--fm);font-size:.72rem;
+  color:rgba(255,255,255,0.4);position:relative;z-index:2;
+}
+.foot-social{display:flex;gap:.5rem}
+.soc{
+  width:34px;height:34px;border-radius:10px;
+  background:rgba(255,255,255,0.05);
+  display:grid;place-items:center;
+  transition:all .2s;
+}
+.soc:hover{background:var(--lime);color:var(--ink)}
+.soc svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    /* ════════════════════════════════════════
-       SECTIONS SHARED
-    ════════════════════════════════════════ */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 5vw;
-    }
+/* ═══════════════════════════════════════
+   REVEAL
+═══════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+.reveal.d5{transition-delay:.40s}.reveal.d6{transition-delay:.48s}
 
-    .section { position: relative; z-index: 1; padding: 7rem 0; }
-    .section-alt { background: var(--white); }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--fm);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--v1);
-      margin-bottom: 1rem;
-    }
-    .eyebrow::before {
-      content: '';
-      width: 20px; height: 2px;
-      background: var(--v1);
-      border-radius: 2px;
-    }
-
-    .sec-title {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: clamp(2rem, 4.5vw, 3.25rem);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      color: var(--ink);
-    }
-    .sec-title .hl {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .sec-sub {
-      margin-top: 0.75rem;
-      font-size: 1rem;
-      color: var(--gray);
-      max-width: 480px;
-      line-height: 1.8;
-    }
-
-    /* ════════════════════════════════════════
-       SERVICIOS
-    ════════════════════════════════════════ */
-    .services-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-bottom: 3.5rem;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    .svc-card {
-      background: var(--white);
-      border-radius: var(--r-lg);
-      padding: 2.25rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: default;
-    }
-    .svc-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.1);
-    }
-    .svc-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--grad);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .svc-card:hover::before { opacity: 1; }
-
-    .svc-card.wide {
-      grid-column: span 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: center;
-      background: var(--ink);
-      color: var(--white);
-    }
-
-    .svc-icon-wrap {
-      width: 54px; height: 54px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .ic-v { background: rgba(91,46,255,0.1); }
-    .ic-t { background: rgba(6,214,160,0.12); }
-    .ic-b { background: rgba(0,180,216,0.1); }
-    .ic-r { background: rgba(244,162,97,0.12); }
-    .ic-s { background: rgba(255,87,87,0.1); }
-
-    .svc-card.wide .svc-icon-wrap {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .svc-title {
-      font-family: var(--fh);
-      font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      margin-bottom: 0.6rem;
-    }
-    .svc-card.wide .svc-title { color: var(--white); }
-
-    .svc-desc {
-      font-size: 0.88rem;
-      color: var(--gray);
-      line-height: 1.75;
-    }
-    .svc-card.wide .svc-desc { color: rgba(255,255,255,0.55); }
-
-    .svc-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 1.25rem;
-    }
-    .chip {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.25rem 0.75rem;
-      border-radius: 50px;
-      background: var(--cream);
-      color: var(--gray);
-    }
-    .svc-card.wide .chip { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
-    .svc-big-num {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: 7rem;
-      line-height: 1;
-      letter-spacing: -0.06em;
-      color: rgba(255,255,255,0.06);
-      text-align: right;
-      user-select: none;
-      padding-right: 1rem;
-    }
-
-    /* ════════════════════════════════════════
-       STATS
-    ════════════════════════════════════════ */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--stone);
-      border-radius: var(--r-lg);
-      overflow: hidden;
-    }
-    .stat-box {
-      background: var(--white);
-      padding: 2.5rem 2rem;
-      text-align: center;
-    }
-    .stat-val {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: 3rem;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .stat-lbl {
-      margin-top: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--gray);
-    }
-
-    /* ════════════════════════════════════════
-       NOSOTROS / ABOUT
-    ════════════════════════════════════════ */
-    .about-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.1fr;
-      gap: 5rem;
-      align-items: center;
-    }
-
-    .about-visual {
-      position: relative;
-    }
-
-    .about-card-main {
-      background: var(--ink);
-      border-radius: var(--r-xl);
-      padding: 3rem;
-      color: var(--white);
-      position: relative;
-      overflow: hidden;
-    }
-    .about-card-main::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 300px; height: 300px;
-      border-radius: 50%;
-      background: var(--grad);
-      opacity: 0.15;
-      filter: blur(50px);
-    }
-
-    .about-grid-val {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: 1.8rem;
-      color: var(--white);
-    }
-    .about-grid-lbl {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.45);
-      margin-top: 0.2rem;
-    }
-
-    .about-inner-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-top: 2.5rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .about-badge {
-      position: absolute;
-      bottom: -1.5rem;
-      right: 2rem;
-      background: var(--white);
-      border-radius: var(--r-md);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    }
-    .about-badge-icon { font-size: 1.5rem; }
-    .about-badge-txt {}
-    .about-badge-val {
-      font-family: var(--fh);
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--ink);
-    }
-    .about-badge-lbl {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-
-    .about-features {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .feat-item {
-      display: flex;
-      gap: 1.25rem;
-      align-items: flex-start;
-    }
-    .feat-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      background: rgba(91,46,255,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    .feat-title {
-      font-family: var(--fh);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--ink);
-    }
-    .feat-desc {
-      font-size: 0.86rem;
-      color: var(--gray);
-      margin-top: 0.2rem;
-      line-height: 1.7;
-    }
-
-    /* ════════════════════════════════════════
-       PROCESO
-    ════════════════════════════════════════ */
-    .proceso-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-    .paso-card {
-      background: var(--white);
-      border-radius: var(--r-lg);
-      padding: 2rem;
-      position: relative;
-      transition: transform 0.3s;
-    }
-    .paso-card:hover { transform: translateY(-4px); }
-    .paso-num {
-      font-family: var(--fh);
-      font-weight: 800;
-      font-size: 3.5rem;
-      line-height: 1;
-      letter-spacing: -0.05em;
-      color: var(--stone);
-      margin-bottom: 1.25rem;
-    }
-    .paso-title {
-      font-family: var(--fh);
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--ink);
-      margin-bottom: 0.5rem;
-    }
-    .paso-desc {
-      font-size: 0.85rem;
-      color: var(--gray);
-      line-height: 1.7;
-    }
-    .paso-arrow {
-      position: absolute;
-      top: 2rem; right: 1.5rem;
-      font-size: 1.2rem;
-      color: var(--lgray);
-    }
-
-    /* ════════════════════════════════════════
-       TESTIMONIO
-    ════════════════════════════════════════ */
-    .testimonios-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 1.5rem;
-      margin-top: 3.5rem;
-    }
-    .test-card {
-      background: var(--white);
-      border-radius: var(--r-xl);
-      padding: 2.5rem;
-    }
-    .test-card.featured {
-      background: var(--ink);
-      color: var(--white);
-    }
-    .test-stars {
-      display: flex;
-      gap: 2px;
-      margin-bottom: 1.25rem;
-      font-size: 0.95rem;
-    }
-    .test-quote {
-      font-family: var(--fh);
-      font-size: 1.1rem;
-      font-weight: 600;
-      line-height: 1.5;
-      color: var(--ink);
-      margin-bottom: 1.5rem;
-    }
-    .test-card.featured .test-quote { color: var(--white); }
-    .test-author {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .test-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--fh);
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--white);
-      flex-shrink: 0;
-    }
-    .av-v { background: var(--grad); }
-    .av-t { background: var(--grad2); }
-    .av-c { background: var(--grad3); }
-    .test-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--ink);
-    }
-    .test-card.featured .test-name { color: var(--white); }
-    .test-role {
-      font-size: 0.78rem;
-      color: var(--lgray);
-    }
-
-    .test-mini-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .test-mini {
-      background: var(--white);
-      border-radius: var(--r-md);
-      padding: 1.5rem;
-    }
-    .test-mini .test-quote { font-size: 0.9rem; }
-
-    /* ════════════════════════════════════════
-       CTA FINAL
-    ════════════════════════════════════════ */
-    .cta-section {
-      padding: 7rem 0;
-      position: relative;
-      z-index: 1;
-    }
-    .cta-box {
-      border-radius: var(--r-xl);
-      padding: 5rem 4rem;
-      background: var(--ink);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-box::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--grad);
-      opacity: 0.12;
-    }
-    .cta-glow {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 500px; height: 300px;
-      border-radius: 50%;
-      background: var(--v1);
-      opacity: 0.2;
-      filter: blur(80px);
-    }
-    .cta-box .eyebrow { color: rgba(255,255,255,0.5); }
-    .cta-box .eyebrow::before { background: rgba(255,255,255,0.3); }
-    .cta-box .sec-title { color: var(--white); }
-    .cta-box .sec-sub { color: rgba(255,255,255,0.5); max-width: 500px; margin: 1rem auto 2.5rem; }
-    .cta-btns {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      position: relative;
-    }
-    .btn-cta-main {
-      font-family: var(--fb);
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--ink);
-      background: var(--white);
-      padding: 0.9rem 2rem;
-      border-radius: 50px;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-block;
-    }
-    .btn-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,255,255,0.2); }
-    .btn-cta-ghost {
-      font-family: var(--fb);
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.8);
-      background: rgba(255,255,255,0.08);
-      padding: 0.9rem 2rem;
-      border-radius: 50px;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-    .btn-cta-ghost:hover { background: rgba(255,255,255,0.15); }
-
-    /* ════════════════════════════════════════
-       CONTACTO
-    ════════════════════════════════════════ */
-    .contacto-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr;
-      gap: 4rem;
-      align-items: start;
-    }
-    .contact-info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      margin-top: 2.5rem;
-    }
-    .ci-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      background: var(--white);
-      border-radius: var(--r-md);
-    }
-    .ci-ico {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      background: rgba(91,46,255,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-    .ci-label { font-size: 0.72rem; color: var(--lgray); }
-    .ci-val { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
-
-    .form-wrap {
-      background: var(--white);
-      border-radius: var(--r-xl);
-      padding: 2.5rem;
-    }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-    .form-group.full { grid-column: 1 / -1; }
-    .flabel {
-      font-family: var(--fm);
-      font-size: 0.67rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--lgray);
-    }
-    .finput, .fselect, .ftextarea {
-      width: 100%;
-      background: var(--cream);
-      border: 1.5px solid transparent;
-      border-radius: var(--r-sm);
-      color: var(--ink);
-      font-family: var(--fb);
-      font-size: 0.9rem;
-      padding: 0.8rem 1rem;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .finput:focus, .fselect:focus, .ftextarea:focus {
-      border-color: var(--v1);
-      background: var(--white);
-    }
-    .fselect {
-      appearance: none;
-      cursor: pointer;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B6B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-    }
-    .ftextarea { resize: vertical; min-height: 110px; }
-    .fsubmit {
-      width: 100%;
-      font-family: var(--fb);
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--white);
-      background: var(--grad);
-      border: none;
-      padding: 1rem;
-      border-radius: var(--r-md);
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: all 0.25s;
-      box-shadow: var(--shadow2);
-    }
-    .fsubmit:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(91,46,255,0.3); }
-
-    /* ════════════════════════════════════════
-       FOOTER
-    ════════════════════════════════════════ */
-    footer {
-      position: relative;
-      z-index: 1;
-      background: var(--ink);
-      color: rgba(255,255,255,0.5);
-      padding: 4rem 5vw 2rem;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 3rem;
-      padding-bottom: 3rem;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 2rem;
-    }
-    .footer-brand .logo { color: var(--white); }
-    .footer-tagline {
-      margin-top: 0.75rem;
-      font-size: 0.85rem;
-      max-width: 240px;
-      line-height: 1.7;
-    }
-    .footer-col h4 {
-      font-family: var(--fh);
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .footer-col ul a {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.4);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-col ul a:hover { color: var(--white); }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      font-family: var(--fm);
-      font-size: 0.7rem;
-    }
-    .footer-social { display: flex; gap: 0.75rem; }
-    .soc-btn {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.07);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .soc-btn:hover { background: var(--v1); color: var(--white); }
-
-    /* ════════════════════════════════════════
-       ANIMATIONS & REVEAL
-    ════════════════════════════════════════ */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .reveal.in { opacity: 1; transform: translateY(0); }
-    .reveal.d1 { transition-delay: 0.08s; }
-    .reveal.d2 { transition-delay: 0.16s; }
-    .reveal.d3 { transition-delay: 0.24s; }
-    .reveal.d4 { transition-delay: 0.32s; }
-
-    /* ════════════════════════════════════════
-       RESPONSIVE
-    ════════════════════════════════════════ */
-    @media (max-width: 1024px) {
-      .services-grid { grid-template-columns: 1fr 1fr; }
-      .svc-card.wide { grid-column: span 2; }
-      .about-layout { grid-template-columns: 1fr; gap: 3rem; }
-      .about-card-main { margin-bottom: 3rem; }
-      .proceso-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-      .testimonios-grid { grid-template-columns: 1fr; }
-      .contacto-layout { grid-template-columns: 1fr; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .footer-top { gap: 2rem; }
-    }
-
-    @media (max-width: 768px) {
-      .nav-center, .nav-btn { display: none; }
-      .hamburger { display: flex; }
-
-      .nav-center.open {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 64px; left: 0; right: 0;
-        background: rgba(247,245,242,0.97);
-        backdrop-filter: blur(20px);
-        padding: 1.5rem 5vw;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--stone);
-        border-radius: 0;
-      }
-
-      .services-grid { grid-template-columns: 1fr; }
-      .svc-card.wide {
-        grid-column: span 1;
-        grid-template-columns: 1fr;
-      }
-      .svc-big-num { display: none; }
-      .proceso-grid { grid-template-columns: 1fr; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
-      .cta-box { padding: 3rem 1.5rem; }
-      .hero-cards { display: none; }
-      footer .footer-top { flex-direction: column; }
-      .footer-bottom { flex-direction: column; text-align: center; }
-    }
-  </style>
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width:1100px){
+  .svc.s1{grid-column:span 7}
+  .svc.s2{grid-column:span 5}
+  .svc.s3{grid-column:span 4}
+  .svc.s4{grid-column:span 4}
+  .svc.s5{grid-column:span 4}
+  .svc.s6{grid-column:span 12}
+}
+@media (max-width:900px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .hero-top{grid-template-columns:1fr}
+  .hero-widget{width:100%;max-width:340px;margin-left:auto}
+  .hero-actions-wrap{grid-template-columns:1fr;gap:2rem}
+  .sec-head{grid-template-columns:1fr;gap:1rem}
+  .about-layout{grid-template-columns:1fr;gap:3rem}
+  .about-stats{grid-template-columns:repeat(3,1fr)}
+  .proc-grid{grid-template-columns:1fr 1fr}
+  .proc{border-right:0;border-bottom:1px dashed var(--line2);padding-bottom:2rem}
+  .tst-grid{grid-template-columns:1fr}
+  .tst.hero-tst{grid-row:auto}
+  .cta-band{grid-template-columns:1fr;gap:2rem}
+  .contact-layout{grid-template-columns:1fr}
+  .foot-top{grid-template-columns:1fr 1fr;gap:2rem}
+}
+@media (max-width:640px){
+  .svc{grid-column:span 12 !important}
+  .hero-title .row-2{padding-left:0}
+  .about-stats{grid-template-columns:1fr 1fr}
+  .proc-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .foot-top{grid-template-columns:1fr}
+  .marquee{margin:2rem -2rem}
+}
+</style>
 </head>
 <body>
 
-  <!-- Background blobs -->
-  <div class="blob-wrap" aria-hidden="true">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a class="brand" href="#"><span class="brand-mark">SJ</span>Tech</a>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#proceso">Proceso</a>
+    <a href="#testimonios">Clientes</a>
   </div>
+  <a class="nav-cta" href="#contacto">
+    Solicitar cotización
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M10 7h7v7"/></svg>
+  </a>
+  <button class="hamburger" id="ham" aria-label="Menú"><span></span></button>
+</nav>
 
-  <!-- ══ NAV ══════════════════════════════════ -->
-  <nav id="nav">
-    <a class="logo" href="#">SJ<b>Tech</b></a>
-    <div class="nav-center" id="navMenu">
-      <a href="#servicios">Servicios</a>
-      <a href="#nosotros">Nosotros</a>
-      <a href="#proceso">Proceso</a>
-      <a href="#testimonios">Clientes</a>
-      <a href="#contacto">Contacto</a>
-    </div>
-    <a class="nav-btn" href="#contacto">Solicitar cotización</a>
-    <button class="hamburger" id="ham" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-tagline">
+        <div class="meta">
+          <span>SJTech · MMXXV</span>
+          <span>Servicios Informáticos</span>
+        </div>
+        <p><strong>Ingeniería, infraestructura y seguridad</strong> para empresas que no pueden permitirse detenerse. Construimos los sistemas que operan tu negocio todos los días.</p>
+      </div>
 
-  <!-- ══ HERO ══════════════════════════════════ -->
-  <section class="hero">
-    <div class="hero-badge">
-      <div class="hero-badge-dot">⚡</div>
-      Soluciones de TI para tu empresa
+      <div class="hero-widget" aria-hidden="true">
+        <div class="hw-head">
+          <span><span class="dot"></span>SISTEMA · LIVE</span>
+          <span>v 04.12</span>
+        </div>
+        <div class="hw-row"><span>Servidores</span><b class="ok">OPERATIVOS</b></div>
+        <div class="hw-row"><span>Uptime</span><b>99.97%</b></div>
+        <div class="hw-row"><span>Tickets hoy</span><b>12 resueltos</b></div>
+        <div class="hw-bar"><span></span></div>
+      </div>
     </div>
 
     <h1 class="hero-title">
-      Tecnología que<br />
-      <span class="grad-text">transforma</span><br />
-      tu negocio
+      <span class="row">Tecnología</span>
+      <span class="row row-2"><em>que opera</em> <span class="chip">tu negocio</span></span>
+      <span class="row">sin pausas.</span>
     </h1>
 
-    <p class="hero-sub">
-      SJTech ofrece servicios informáticos integrales: desarrollo de software, infraestructura, ciberseguridad y soporte técnico adaptados a tu empresa.
-    </p>
-
-    <div class="hero-actions">
-      <a class="btn-main" href="#servicios">Explorar servicios</a>
-      <a class="btn-outline" href="#contacto">Hablar con un experto</a>
-    </div>
-
-    <div class="hero-cards">
-      <div class="mini-card"><div class="mini-card-icon mc-v">⚙️</div>Desarrollo de software</div>
-      <div class="mini-card"><div class="mini-card-icon mc-t">🛡️</div>Ciberseguridad</div>
-      <div class="mini-card"><div class="mini-card-icon mc-c">☁️</div>Cloud & Hosting</div>
-      <div class="mini-card"><div class="mini-card-icon mc-s">🔧</div>Soporte técnico</div>
-    </div>
-
-    <div class="scroll-hint">
-      <span>Descubre más</span>
-      <div class="scroll-arrow">↓</div>
-    </div>
-  </section>
-
-  <!-- ══ STRIP ══════════════════════════════════ -->
-  <div class="strip" aria-hidden="true">
-    <div class="strip-track">
-      <div class="strip-item"><span class="strip-sep"></span>Desarrollo Web</div>
-      <div class="strip-item"><span class="strip-sep"></span>Cloud Computing</div>
-      <div class="strip-item"><span class="strip-sep"></span>Ciberseguridad</div>
-      <div class="strip-item"><span class="strip-sep"></span>Redes Corporativas</div>
-      <div class="strip-item"><span class="strip-sep"></span>Soporte 24/7</div>
-      <div class="strip-item"><span class="strip-sep"></span>Consultoría IT</div>
-      <div class="strip-item"><span class="strip-sep"></span>Automatización</div>
-      <div class="strip-item"><span class="strip-sep"></span>Bases de Datos</div>
-      <div class="strip-item"><span class="strip-sep"></span>Desarrollo Web</div>
-      <div class="strip-item"><span class="strip-sep"></span>Cloud Computing</div>
-      <div class="strip-item"><span class="strip-sep"></span>Ciberseguridad</div>
-      <div class="strip-item"><span class="strip-sep"></span>Redes Corporativas</div>
-      <div class="strip-item"><span class="strip-sep"></span>Soporte 24/7</div>
-      <div class="strip-item"><span class="strip-sep"></span>Consultoría IT</div>
-      <div class="strip-item"><span class="strip-sep"></span>Automatización</div>
-      <div class="strip-item"><span class="strip-sep"></span>Bases de Datos</div>
+    <div class="hero-actions-wrap">
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contacto">
+          Agendar diagnóstico
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M10 7h7v7"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-val">08<sup>+</sup></span><span class="hero-stat-lbl">Años operando</span></div>
+        <div class="hero-stat"><span class="hero-stat-val">120<sup>+</sup></span><span class="hero-stat-lbl">Proyectos</span></div>
+        <div class="hero-stat"><span class="hero-stat-val">99.97<sup>%</sup></span><span class="hero-stat-lbl">Uptime promedio</span></div>
+        <div class="hero-stat"><span class="hero-stat-val">&lt;4h</span><span class="hero-stat-lbl">Respuesta SLA</span></div>
+      </div>
     </div>
   </div>
+</header>
 
-  <!-- ══ SERVICIOS ══════════════════════════════ -->
-  <section class="section" id="servicios">
-    <div class="container">
-      <div class="services-header">
-        <div class="reveal">
-          <div class="eyebrow">Qué hacemos</div>
-          <h2 class="sec-title">Servicios que<br /><span class="hl">marcan la diferencia</span></h2>
-        </div>
-        <p class="sec-sub reveal d1">Desde startups hasta corporaciones, cubrimos todas las necesidades tecnológicas de tu organización.</p>
-      </div>
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="mqTrack"></div>
+</div>
 
-      <div class="services-grid">
-
-        <div class="svc-card reveal d1">
-          <div class="svc-icon-wrap ic-v">⚙️</div>
-          <h3 class="svc-title">Desarrollo de Software</h3>
-          <p class="svc-desc">Aplicaciones web y móviles a medida. Diseñamos, desarrollamos y desplegamos soluciones escalables con las últimas tecnologías.</p>
-          <div class="svc-chips">
-            <span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Python</span><span class="chip">APIs</span>
-          </div>
-        </div>
-
-        <div class="svc-card reveal d2">
-          <div class="svc-icon-wrap ic-t">☁️</div>
-          <h3 class="svc-title">Cloud & Hosting</h3>
-          <p class="svc-desc">Migramos y administramos tu infraestructura en la nube garantizando alta disponibilidad, seguridad y rendimiento óptimo.</p>
-          <div class="svc-chips">
-            <span class="chip">AWS</span><span class="chip">Azure</span><span class="chip">Docker</span><span class="chip">Kubernetes</span>
-          </div>
-        </div>
-
-        <div class="svc-card reveal d3">
-          <div class="svc-icon-wrap ic-b">🛡️</div>
-          <h3 class="svc-title">Ciberseguridad</h3>
-          <p class="svc-desc">Protegemos tu empresa con auditorías, pentesting, monitoreo 24/7 y planes de respuesta ante incidentes.</p>
-          <div class="svc-chips">
-            <span class="chip">Pentesting</span><span class="chip">SIEM</span><span class="chip">ISO 27001</span>
-          </div>
-        </div>
-
-        <div class="svc-card wide reveal d1">
-          <div>
-            <div class="svc-icon-wrap" style="background:rgba(255,255,255,0.08);">🌐</div>
-            <h3 class="svc-title">Redes & Infraestructura</h3>
-            <p class="svc-desc">Diseñamos e implementamos redes corporativas robustas. Cableado estructurado, Wi-Fi empresarial, VPN y gestión de servidores.</p>
-            <div class="svc-chips">
-              <span class="chip">Cisco</span><span class="chip">MikroTik</span><span class="chip">VPN</span><span class="chip">VLAN</span><span class="chip">Switches</span>
-            </div>
-          </div>
-          <div class="svc-big-num">NET</div>
-        </div>
-
-        <div class="svc-card reveal d2">
-          <div class="svc-icon-wrap ic-r">🔧</div>
-          <h3 class="svc-title">Soporte Técnico</h3>
-          <p class="svc-desc">Mesa de ayuda presencial y remota. SLAs claros, mantenimiento preventivo y atención prioritaria ante incidentes críticos.</p>
-          <div class="svc-chips">
-            <span class="chip">Help Desk</span><span class="chip">Remoto</span><span class="chip">24/7</span>
-          </div>
-        </div>
-
-        <div class="svc-card reveal d3">
-          <div class="svc-icon-wrap ic-s">📊</div>
-          <h3 class="svc-title">Consultoría IT</h3>
-          <p class="svc-desc">Asesoramiento estratégico para tu transformación digital. Roadmaps, auditorías tecnológicas y optimización de procesos.</p>
-          <div class="svc-chips">
-            <span class="chip">Auditoría</span><span class="chip">ERP</span><span class="chip">Digital</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ STATS ══════════════════════════════════ -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="stats-row reveal">
-        <div class="stat-box">
-          <div class="stat-val">8+</div>
-          <div class="stat-lbl">Años de experiencia</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val">120+</div>
-          <div class="stat-lbl">Proyectos entregados</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val">99%</div>
-          <div class="stat-lbl">Clientes satisfechos</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val">4h</div>
-          <div class="stat-lbl">Tiempo de respuesta</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ NOSOTROS ══════════════════════════════ -->
-  <section class="section" id="nosotros">
-    <div class="container">
-      <div class="about-layout">
-
-        <div class="about-visual reveal">
-          <div class="about-card-main">
-            <div class="eyebrow" style="color:rgba(255,255,255,0.5);"><span style="background:rgba(255,255,255,0.3);display:inline-block;width:20px;height:2px;border-radius:2px;margin-right:.5rem;vertical-align:middle;"></span>SJTech en cifras</div>
-            <p style="color:rgba(255,255,255,0.55);font-size:.9rem;margin-top:.5rem;line-height:1.8;">Un equipo de ingenieros certificados comprometidos con la excelencia tecnológica de cada cliente.</p>
-            <div class="about-inner-grid">
-              <div>
-                <div class="about-grid-val">50+</div>
-                <div class="about-grid-lbl">Clientes activos</div>
-              </div>
-              <div>
-                <div class="about-grid-val">15+</div>
-                <div class="about-grid-lbl">Ingenieros certificados</div>
-              </div>
-              <div>
-                <div class="about-grid-val">3</div>
-                <div class="about-grid-lbl">Países atendidos</div>
-              </div>
-              <div>
-                <div class="about-grid-val">∞</div>
-                <div class="about-grid-lbl">Compromiso contigo</div>
-              </div>
-            </div>
-          </div>
-          <div class="about-badge">
-            <div class="about-badge-icon">🏆</div>
-            <div class="about-badge-txt">
-              <div class="about-badge-val">Top Partner</div>
-              <div class="about-badge-lbl">Microsoft & AWS Certified</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="about-text reveal d2">
-          <div class="eyebrow">Por qué SJTech</div>
-          <h2 class="sec-title">Tu aliado<br />tecnológico<br /><span class="hl">de confianza</span></h2>
-          <p class="sec-sub">No somos solo proveedores de servicio, somos el departamento de TI que tu empresa merece: proactivo, experto y siempre disponible.</p>
-          <div class="about-features">
-            <div class="feat-item">
-              <div class="feat-icon">⚡</div>
-              <div>
-                <div class="feat-title">Respuesta garantizada en &lt; 4 horas</div>
-                <div class="feat-desc">SLAs claros y equipo de guardia para emergencias críticas. Tu negocio nunca se detiene.</div>
-              </div>
-            </div>
-            <div class="feat-item">
-              <div class="feat-icon">🎓</div>
-              <div>
-                <div class="feat-title">Equipo 100% certificado</div>
-                <div class="feat-desc">Certificaciones Microsoft, AWS, Cisco y CompTIA vigentes. Conocimiento actualizado todo el año.</div>
-              </div>
-            </div>
-            <div class="feat-item">
-              <div class="feat-icon">💬</div>
-              <div>
-                <div class="feat-title">Transparencia total</div>
-                <div class="feat-desc">Presupuestos sin sorpresas, reportes periódicos y comunicación directa en todo momento.</div>
-              </div>
-            </div>
-            <div class="feat-item">
-              <div class="feat-icon">🔄</div>
-              <div>
-                <div class="feat-title">Mejora continua</div>
-                <div class="feat-desc">Monitoreamos proactivamente y evolucionamos tus sistemas antes de que los problemas aparezcan.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ PROCESO ══════════════════════════════ -->
-  <section class="section section-alt" id="proceso">
-    <div class="container">
-      <div style="text-align:center;" class="reveal">
-        <div class="eyebrow" style="justify-content:center;">Cómo trabajamos</div>
-        <h2 class="sec-title">Un proceso claro<br />de principio a <span class="hl">fin</span></h2>
-        <p class="sec-sub" style="margin:1rem auto 0; text-align:center;">Metodología probada que garantiza resultados predecibles, comunicación fluida y proyectos entregados a tiempo.</p>
-      </div>
-      <div class="proceso-grid">
-        <div class="paso-card reveal d1">
-          <div class="paso-num">01</div>
-          <span class="paso-arrow">→</span>
-          <div class="paso-title">Diagnóstico</div>
-          <div class="paso-desc">Analizamos tu infraestructura actual, identificamos brechas, riesgos y oportunidades de mejora.</div>
-        </div>
-        <div class="paso-card reveal d2">
-          <div class="paso-num">02</div>
-          <span class="paso-arrow">→</span>
-          <div class="paso-title">Propuesta</div>
-          <div class="paso-desc">Diseñamos la solución óptima con roadmap, cronograma detallado y presupuesto sin sorpresas.</div>
-        </div>
-        <div class="paso-card reveal d3">
-          <div class="paso-num">03</div>
-          <span class="paso-arrow">→</span>
-          <div class="paso-title">Ejecución</div>
-          <div class="paso-desc">Implementamos con metodologías ágiles, reportes frecuentes y entregables verificables en cada sprint.</div>
-        </div>
-        <div class="paso-card reveal d4">
-          <div class="paso-num">04</div>
-          <div class="paso-title">Soporte continuo</div>
-          <div class="paso-desc">Monitoreo proactivo, mantenimiento preventivo y evolución constante de los sistemas entregados.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ TESTIMONIOS ══════════════════════════ -->
-  <section class="section" id="testimonios">
-    <div class="container">
+<!-- ═══ SERVICIOS ═══ -->
+<section class="sec" id="servicios">
+  <div class="wrap">
+    <div class="sec-head">
       <div class="reveal">
-        <div class="eyebrow">Clientes</div>
-        <h2 class="sec-title">Lo que dicen<br />quienes <span class="hl">confían en nosotros</span></h2>
+        <div class="eyebrow">01 · Qué hacemos</div>
+        <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.5rem);margin-top:1rem">
+          Un departamento de&nbsp;TI<br><em>completo</em>, sin la planilla.
+        </h2>
       </div>
-      <div class="testimonios-grid">
-        <div class="test-card featured reveal d1">
-          <div class="test-stars">⭐⭐⭐⭐⭐</div>
-          <p class="test-quote">"SJTech transformó completamente nuestra infraestructura. Migramos a la nube en tiempo récord y sin interrupciones. El equipo siempre disponible y con respuestas claras. No podríamos estar más satisfechos."</p>
-          <div class="test-author">
-            <div class="test-avatar av-v">MA</div>
-            <div>
-              <div class="test-name">María Alvarado</div>
-              <div class="test-role">CTO — Distribuidora Regional S.A.</div>
-            </div>
-          </div>
-        </div>
-        <div class="test-mini-grid">
-          <div class="test-mini reveal d2">
-            <div class="test-stars">⭐⭐⭐⭐⭐</div>
-            <p class="test-quote">"El sistema de soporte que implementaron redujo nuestros tiempos de respuesta a la mitad. Excelente equipo."</p>
-            <div class="test-author" style="margin-top:1rem;">
-              <div class="test-avatar av-t">RC</div>
-              <div>
-                <div class="test-name">Roberto Chávez</div>
-                <div class="test-role">Gerente IT — Grupo Comercial Norte</div>
-              </div>
-            </div>
-          </div>
-          <div class="test-mini reveal d3">
-            <div class="test-stars">⭐⭐⭐⭐⭐</div>
-            <p class="test-quote">"Desarrollaron nuestra plataforma de ventas en tiempo y forma. Comunicación impecable y código de calidad. Los recomendamos ampliamente."</p>
-            <div class="test-author" style="margin-top:1rem;">
-              <div class="test-avatar av-c">LP</div>
-              <div>
-                <div class="test-name">Lucía Paredes</div>
-                <div class="test-role">CEO — StartupMX</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p class="sec-sub reveal d2">Seis capacidades complementarias, un solo equipo responsable. Desde infraestructura crítica hasta aplicaciones a medida.</p>
     </div>
-  </section>
 
-  <!-- ══ CTA ══════════════════════════════════ -->
-  <div class="cta-section">
-    <div class="container">
-      <div class="cta-box reveal">
-        <div class="cta-glow"></div>
-        <div class="eyebrow" style="justify-content:center;">Empieza hoy</div>
-        <h2 class="sec-title" style="color:#fff;">¿Listo para llevar<br />tu empresa al <span class="hl">siguiente nivel</span>?</h2>
-        <p class="sec-sub">Cuéntanos tu desafío. Te respondemos en menos de 24 horas con una propuesta inicial sin costo ni compromiso.</p>
-        <div class="cta-btns">
-          <a class="btn-cta-main" href="#contacto">Solicitar diagnóstico gratis</a>
-          <a class="btn-cta-ghost" href="tel:+XX0000000000">Llamar ahora</a>
+    <div class="svc-grid">
+      <!-- 1 - Dark featured -->
+      <article class="svc s1 reveal d1">
+        <span class="svc-num">01 / 06</span>
+        <div class="svc-ic">
+          <!-- code brackets -->
+          <svg viewBox="0 0 24 24"><path d="M9 18l-6-6 6-6M15 6l6 6-6 6M13 4l-2 16"/></svg>
+        </div>
+        <span class="svc-tag">Flagship</span>
+        <h3 class="svc-title">Desarrollo de software a medida</h3>
+        <p class="svc-desc">Aplicaciones web, móviles y APIs diseñadas en torno a tu operación. Arquitecturas escalables, CI/CD y entregas verificables cada dos semanas.</p>
+        <div class="svc-chips">
+          <span class="chip">React</span><span class="chip">Node</span><span class="chip">Python</span><span class="chip">PostgreSQL</span><span class="chip">AWS</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+
+      <!-- 2 - Cloud -->
+      <article class="svc s2 reveal d2">
+        <span class="svc-num">02 / 06</span>
+        <div class="svc-ic">
+          <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.88-7.9 5.5 5.5 0 0110.65-1.34A4 4 0 0117 18H7z"/></svg>
+        </div>
+        <h3 class="svc-title">Cloud &amp; hosting</h3>
+        <p class="svc-desc">Migración, optimización y administración de infraestructura en AWS, Azure y GCP. Alta disponibilidad garantizada.</p>
+        <div class="svc-chips">
+          <span class="chip">AWS</span><span class="chip">Azure</span><span class="chip">Docker</span><span class="chip">K8s</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+
+      <!-- 3 - Indigo Ciberseguridad -->
+      <article class="svc s3 reveal d3">
+        <span class="svc-num">03 / 06</span>
+        <div class="svc-ic">
+          <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3 class="svc-title">Cibersegu&shy;ridad</h3>
+        <p class="svc-desc">Auditorías, pentesting, SIEM y planes de respuesta ante incidentes.</p>
+        <div class="svc-chips">
+          <span class="chip">ISO 27001</span><span class="chip">SIEM</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+
+      <!-- 4 - Redes -->
+      <article class="svc s4 reveal d1">
+        <span class="svc-num">04 / 06</span>
+        <div class="svc-ic">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M3 12h3M18 12h3M12 3v3M12 18v3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+        </div>
+        <h3 class="svc-title">Redes e infraestructura</h3>
+        <p class="svc-desc">Cableado estructurado, Wi-Fi empresarial, VLANs segmentadas y VPN site-to-site.</p>
+        <div class="svc-chips">
+          <span class="chip">Cisco</span><span class="chip">MikroTik</span><span class="chip">Fortinet</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+
+      <!-- 5 - Coral Soporte -->
+      <article class="svc s5 reveal d2">
+        <span class="svc-num">05 / 06</span>
+        <div class="svc-ic">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6 6a2 2 0 002.8 2.8l6-6a4 4 0 005.4-5.4l-2.4 2.4-2-.3-.3-2 2.4-2.4z"/></svg>
+        </div>
+        <h3 class="svc-title">Soporte técnico 24/7</h3>
+        <p class="svc-desc">Mesa de ayuda presencial y remota. Mantenimiento preventivo y atención prioritaria a incidentes críticos bajo SLA.</p>
+        <div class="svc-chips">
+          <span class="chip">Help Desk</span><span class="chip">SLA</span><span class="chip">On-site</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+
+      <!-- 6 - Consultoria -->
+      <article class="svc s6 reveal d3">
+        <span class="svc-num">06 / 06</span>
+        <div class="svc-ic">
+          <svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V10l7-5 7 5v10M9 20v-6h6v6"/></svg>
+        </div>
+        <h3 class="svc-title">Consultoría estratégica</h3>
+        <p class="svc-desc">Roadmaps, auditorías tecnológicas y optimización de procesos para acelerar la transformación digital.</p>
+        <div class="svc-chips">
+          <span class="chip">Auditoría</span><span class="chip">Roadmap</span><span class="chip">ERP</span>
+        </div>
+        <div class="svc-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M10 7h7v7"/></svg></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NOSOTROS (dark) ═══ -->
+<section class="sec sec--ink" id="nosotros">
+  <div class="wrap">
+    <div class="about-layout">
+      <div>
+        <div class="eyebrow reveal">02 · Por qué SJTech</div>
+        <h2 class="about-big reveal d1" style="margin-top:1rem">
+          El equipo que tus <em>sistemas</em><br> necesitan. La tranquilidad<br>que tu negocio merece.
+        </h2>
+        <p class="about-sub reveal d2">No somos un proveedor más. Operamos como tu departamento interno de TI: proactivos, medibles y siempre presentes.</p>
+
+        <div class="about-stats">
+          <div class="about-stat reveal d1">
+            <div class="about-stat-val">50<span class="sup">+</span></div>
+            <div class="about-stat-lbl">Clientes activos</div>
+          </div>
+          <div class="about-stat reveal d2">
+            <div class="about-stat-val">15<span class="sup">+</span></div>
+            <div class="about-stat-lbl">Ingenieros certificados</div>
+          </div>
+          <div class="about-stat reveal d3">
+            <div class="about-stat-val">03</div>
+            <div class="about-stat-lbl">Países atendidos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-list">
+        <div class="feat reveal d1">
+          <div class="feat-num">01</div>
+          <div class="feat-body">
+            <h3>Respuesta en menos de 4 horas</h3>
+            <p>SLAs claros y medibles, con equipo de guardia permanente para emergencias críticas. Tu negocio nunca se detiene.</p>
+          </div>
+          <div class="feat-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        </div>
+        <div class="feat reveal d2">
+          <div class="feat-num">02</div>
+          <div class="feat-body">
+            <h3>Equipo 100% certificado</h3>
+            <p>Certificaciones vigentes en Microsoft, AWS, Cisco y CompTIA. Renovación anual obligatoria para todo el equipo.</p>
+          </div>
+          <div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z"/></svg></div>
+        </div>
+        <div class="feat reveal d3">
+          <div class="feat-num">03</div>
+          <div class="feat-body">
+            <h3>Transparencia radical</h3>
+            <p>Presupuestos detallados sin letras pequeñas, reportes mensuales con métricas reales y canal directo de comunicación.</p>
+          </div>
+          <div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        </div>
+        <div class="feat reveal d4">
+          <div class="feat-num">04</div>
+          <div class="feat-body">
+            <h3>Mejora continua</h3>
+            <p>Monitoreo proactivo 24/7. Detectamos y resolvemos incidentes antes de que impacten tu operación.</p>
+          </div>
+          <div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg></div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- ══ CONTACTO ══════════════════════════════ -->
-  <section class="section section-alt" id="contacto">
-    <div class="container">
-      <div class="contacto-layout">
-        <div class="reveal">
-          <div class="eyebrow">Contacto</div>
-          <h2 class="sec-title">Hablemos de<br />tu <span class="hl">proyecto</span></h2>
-          <p class="sec-sub">Estamos listos para escucharte. Completa el formulario o contáctanos directamente.</p>
-          <div class="contact-info-list">
-            <div class="ci-row">
-              <div class="ci-ico">📍</div>
-              <div><div class="ci-label">Ubicación</div><div class="ci-val">Tu ciudad — atención remota en todo el país</div></div>
-            </div>
-            <div class="ci-row">
-              <div class="ci-ico">📞</div>
-              <div><div class="ci-label">Teléfono</div><div class="ci-val">+XX (000) 000-0000</div></div>
-            </div>
-            <div class="ci-row">
-              <div class="ci-ico">✉️</div>
-              <div><div class="ci-label">Email</div><div class="ci-val">hola@sjtech.com</div></div>
-            </div>
-            <div class="ci-row">
-              <div class="ci-ico">🕐</div>
-              <div><div class="ci-label">Horario</div><div class="ci-val">Lun – Vie · 8:00 am – 6:00 pm</div></div>
-            </div>
+<!-- ═══ PROCESO ═══ -->
+<section class="sec" id="proceso">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="reveal">
+        <div class="eyebrow eyebrow--coral">03 · Cómo trabajamos</div>
+        <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.5rem);margin-top:1rem">
+          Un proceso<br><em>predecible</em>, de principio a fin.
+        </h2>
+      </div>
+      <p class="sec-sub reveal d2">Metodología probada en más de 120 proyectos. Cada fase con entregables claros, plazos definidos y comunicación constante.</p>
+    </div>
+
+    <div class="proc-grid">
+      <div class="proc reveal d1">
+        <div class="proc-num">01</div>
+        <span class="proc-duration">· 1 semana</span>
+        <h3>Diagnóstico</h3>
+        <p>Analizamos tu infraestructura actual, identificamos brechas y priorizamos oportunidades.</p>
+      </div>
+      <div class="proc reveal d2">
+        <div class="proc-num">02</div>
+        <span class="proc-duration">· 1–2 semanas</span>
+        <h3>Propuesta</h3>
+        <p>Roadmap detallado, cronograma realista y presupuesto cerrado sin sorpresas.</p>
+      </div>
+      <div class="proc reveal d3">
+        <div class="proc-num">03</div>
+        <span class="proc-duration">· Variable</span>
+        <h3>Ejecución</h3>
+        <p>Sprints ágiles, demos frecuentes y entregables verificables en cada iteración.</p>
+      </div>
+      <div class="proc reveal d4">
+        <div class="proc-num">04</div>
+        <span class="proc-duration">· Continuo</span>
+        <h3>Operación</h3>
+        <p>Monitoreo, mantenimiento preventivo y evolución continua junto a tu equipo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIOS ═══ -->
+<section class="sec sec--paper" id="testimonios">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="reveal">
+        <div class="eyebrow">04 · Clientes</div>
+        <h2 class="display" style="font-size:clamp(2.4rem,5.5vw,4.5rem);margin-top:1rem">
+          Lo que dicen<br>quienes <em>confían</em> en nosotros.
+        </h2>
+      </div>
+      <p class="sec-sub reveal d2">Empresas medianas y grandes que operan con nuestros sistemas todos los días.</p>
+    </div>
+
+    <div class="tst-grid">
+      <article class="tst hero-tst reveal d1">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="tst-mark">
+            <svg viewBox="0 0 24 24"><path d="M3 10h5V6H3v8c0 2 1 3 3 3v-2c-1 0-1.5-.5-1.5-1.5V10zM13 10h5V6h-5v8c0 2 1 3 3 3v-2c-1 0-1.5-.5-1.5-1.5V10z"/></svg>
+          </div>
+          <div class="tst-rating" aria-label="5 estrellas">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
           </div>
         </div>
+        <blockquote class="tst-quote">SJTech rediseñó nuestra infraestructura completa y migramos a la nube sin una sola hora de interrupción. Respuesta inmediata, comunicación clara y métricas a la vista.</blockquote>
+        <div class="tst-foot">
+          <div class="tst-avatar">MA</div>
+          <div>
+            <div class="tst-name">María Alvarado</div>
+            <div class="tst-role">CTO · Distribuidora Regional S.A.</div>
+          </div>
+        </div>
+      </article>
 
-        <div class="form-wrap reveal d2">
-          <form onsubmit="handleForm(event)">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="flabel">Nombre *</label>
-                <input class="finput" type="text" placeholder="Tu nombre" required />
-              </div>
-              <div class="form-group">
-                <label class="flabel">Empresa</label>
-                <input class="finput" type="text" placeholder="Tu empresa" />
-              </div>
-              <div class="form-group">
-                <label class="flabel">Email *</label>
-                <input class="finput" type="email" placeholder="correo@empresa.com" required />
-              </div>
-              <div class="form-group">
-                <label class="flabel">Teléfono</label>
-                <input class="finput" type="tel" placeholder="+XX 000 000 0000" />
-              </div>
-              <div class="form-group full">
-                <label class="flabel">Servicio de interés</label>
-                <select class="fselect">
-                  <option value="" disabled selected>Selecciona una opción</option>
-                  <option>Desarrollo de Software</option>
-                  <option>Cloud & Hosting</option>
-                  <option>Ciberseguridad</option>
-                  <option>Redes & Infraestructura</option>
-                  <option>Soporte Técnico</option>
-                  <option>Consultoría IT</option>
-                  <option>Otro</option>
-                </select>
-              </div>
-              <div class="form-group full">
-                <label class="flabel">Mensaje</label>
-                <textarea class="ftextarea" placeholder="Cuéntanos brevemente tu necesidad o proyecto..."></textarea>
-              </div>
-            </div>
-            <button class="fsubmit" type="submit" id="fsub">Enviar mensaje →</button>
-          </form>
+      <article class="tst reveal d2">
+        <div class="tst-rating" style="color:var(--accent)">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+        <blockquote class="tst-quote">El sistema de soporte que implementaron redujo nuestros tiempos de respuesta a la mitad.</blockquote>
+        <div class="tst-foot">
+          <div class="tst-avatar">RC</div>
+          <div>
+            <div class="tst-name">Roberto Chávez</div>
+            <div class="tst-role">Gerente IT · Grupo Norte</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="tst reveal d3">
+        <div class="tst-rating" style="color:var(--accent)">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+        <blockquote class="tst-quote">Desarrollaron nuestra plataforma de ventas en tiempo y forma. Código de calidad y comunicación impecable.</blockquote>
+        <div class="tst-foot">
+          <div class="tst-avatar">LP</div>
+          <div>
+            <div class="tst-name">Lucía Paredes</div>
+            <div class="tst-role">CEO · StartupMX</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA + CONTACT ═══ -->
+<section class="sec" id="contacto">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <h2 class="cta-title">¿Listo para que tu&nbsp;TI<br><em>deje de ser</em> un problema?</h2>
+      <div class="cta-side">
+        <p>Cuéntanos tu desafío. Te respondemos en menos de 24 horas con una propuesta inicial sin costo ni compromiso.</p>
+        <div class="cta-side-actions">
+          <a class="btn btn-lime" href="#form">
+            Diagnóstico gratis
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M10 7h7v7"/></svg>
+          </a>
+          <a class="btn btn-dark-ghost" href="tel:+000000000">Llamar ahora</a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ══ FOOTER ═══════════════════════════════ -->
-  <footer>
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="logo" href="#">SJ<b>Tech</b></a>
-        <p class="footer-tagline">Soluciones informáticas integrales para impulsar el crecimiento de tu empresa.</p>
+    <div class="contact-layout" style="margin-top:5rem" id="form">
+      <div class="reveal">
+        <div class="eyebrow">05 · Contacto</div>
+        <h2 class="display" style="font-size:clamp(2.2rem,4.5vw,3.4rem);margin-top:1rem">
+          Hablemos de<br>tu <em>proyecto</em>.
+        </h2>
+        <div class="contact-info-list">
+          <div class="cinfo">
+            <div class="cinfo-ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-7.5-7-12a7 7 0 1114 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+            <div><div class="cinfo-lbl">Ubicación</div><div class="cinfo-val">Atención remota en todo el país</div></div>
+          </div>
+          <div class="cinfo">
+            <div class="cinfo-ic"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.6a2 2 0 01-.5 2.1L8 9.6a16 16 0 006 6l1.3-1.3a2 2 0 012-.5c.9.3 1.7.5 2.6.6a2 2 0 011.7 2z"/></svg></div>
+            <div><div class="cinfo-lbl">Teléfono</div><div class="cinfo-val">+XX (000) 000-0000</div></div>
+          </div>
+          <div class="cinfo">
+            <div class="cinfo-ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+            <div><div class="cinfo-lbl">Email</div><div class="cinfo-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="61090e0d0021120b150402094f020e0c">[email&#160;protected]</a></div></div>
+          </div>
+          <div class="cinfo">
+            <div class="cinfo-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div><div class="cinfo-lbl">Horario</div><div class="cinfo-val">Lun–Vie · 8:00 am – 6:00 pm</div></div>
+          </div>
+        </div>
       </div>
-      <div class="footer-col">
+
+      <div class="form-wrap reveal d2">
+        <form id="contactForm">
+          <div class="form-grid">
+            <div class="fgroup">
+              <label class="flabel">Nombre <span class="req">*</span></label>
+              <input class="finput" type="text" placeholder="Tu nombre" required />
+            </div>
+            <div class="fgroup">
+              <label class="flabel">Empresa</label>
+              <input class="finput" type="text" placeholder="Tu empresa" />
+            </div>
+            <div class="fgroup">
+              <label class="flabel">Email <span class="req">*</span></label>
+              <input class="finput" type="email" placeholder="correo@empresa.com" required />
+            </div>
+            <div class="fgroup">
+              <label class="flabel">Teléfono</label>
+              <input class="finput" type="tel" placeholder="+XX 000 000 0000" />
+            </div>
+            <div class="fgroup full">
+              <label class="flabel">Servicio de interés</label>
+              <select class="fselect">
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option>Desarrollo de software</option>
+                <option>Cloud &amp; hosting</option>
+                <option>Ciberseguridad</option>
+                <option>Redes e infraestructura</option>
+                <option>Soporte técnico</option>
+                <option>Consultoría estratégica</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="fgroup full">
+              <label class="flabel">Cuéntanos sobre tu proyecto</label>
+              <textarea class="ftxt" placeholder="Describe brevemente tu necesidad, contexto actual y plazos aproximados..."></textarea>
+            </div>
+          </div>
+          <div class="form-foot">
+            <small>Respondemos en &lt; 24 hs hábiles.</small>
+            <button class="fsubmit" type="submit" id="fsub">
+              Enviar mensaje
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M10 7h7v7"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="brand" href="#"><span class="brand-mark">SJ</span>Tech</a>
+        <p>Soluciones informáticas integrales para empresas que operan sin pausa.</p>
+      </div>
+      <div class="foot-col">
         <h4>Servicios</h4>
         <ul>
-          <li><a href="#servicios">Desarrollo de Software</a></li>
-          <li><a href="#servicios">Cloud & Hosting</a></li>
+          <li><a href="#servicios">Desarrollo de software</a></li>
+          <li><a href="#servicios">Cloud &amp; hosting</a></li>
           <li><a href="#servicios">Ciberseguridad</a></li>
-          <li><a href="#servicios">Redes & Infraestructura</a></li>
-          <li><a href="#servicios">Soporte Técnico</a></li>
+          <li><a href="#servicios">Redes</a></li>
+          <li><a href="#servicios">Soporte 24/7</a></li>
         </ul>
       </div>
-      <div class="footer-col">
+      <div class="foot-col">
         <h4>Empresa</h4>
         <ul>
           <li><a href="#nosotros">Nosotros</a></li>
@@ -1606,61 +1211,61 @@
           <li><a href="#contacto">Contacto</a></li>
         </ul>
       </div>
-      <div class="footer-col">
+      <div class="foot-col">
         <h4>Contacto</h4>
         <ul>
-          <li><a href="mailto:hola@sjtech.com">hola@sjtech.com</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#066e696a6746756c7263656e2865696b"><span class="__cf_email__" data-cfemail="c8a0a7a4a988bba2bcadaba0e6aba7a5">[email&#160;protected]</span></a></li>
           <li><a href="tel:+000000000">+XX (000) 000-0000</a></li>
         </ul>
-        <div class="footer-social" style="margin-top:1.25rem;">
-          <a class="soc-btn" href="#" aria-label="LinkedIn">in</a>
-          <a class="soc-btn" href="#" aria-label="Twitter">𝕏</a>
-          <a class="soc-btn" href="#" aria-label="Facebook">f</a>
+        <div class="foot-social" style="margin-top:1.25rem">
+          <a class="soc" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4 4h4v16H4zM6 2a2 2 0 100 4 2 2 0 000-4zM10 8h4v2c.6-1 2-2 4-2 3 0 4 2 4 5v7h-4v-6c0-1.5-.5-2.5-2-2.5s-2 1-2 2.5V20h-4V8z"/></svg></a>
+          <a class="soc" href="#" aria-label="X"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          <a class="soc" href="#" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-3.2 19.5c.5 0 .7-.2.7-.5v-2c-2.8.6-3.4-1.2-3.4-1.2-.4-1-1-1.3-1-1.3-1-.6 0-.6 0-.6 1 0 1.5 1 1.5 1 .9 1.6 2.5 1.2 3.1.9 0-.7.4-1.2.7-1.5-2.2-.2-4.6-1.1-4.6-5 0-1 .4-2 1-2.6-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.3 9.3 0 015 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.6 1 1.5 1 2.6 0 3.8-2.3 4.7-4.5 5 .4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0012 2z"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2025 SJTech — Todos los derechos reservados.</span>
+    <div class="foot-bottom">
+      <span>© 2025 SJTech — Todos los derechos reservados</span>
       <span>Diseñado para impulsar negocios</span>
     </div>
-  </footer>
+  </div>
+</footer>
 
-  <script>
-    // Nav scroll
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 40);
-    });
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Marquee fill
+const mqItems = ['Desarrollo','Cloud','Ciberseguridad','Redes','Soporte 24/7','Consultoría','Automatización','APIs','Infraestructura'];
+const mqHtml = mqItems.map(w => `<span class="marquee-item">${w}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>`).join('');
+document.getElementById('mqTrack').innerHTML = (mqHtml+mqHtml);
 
-    // Hamburger
-    const ham = document.getElementById('ham');
-    const menu = document.getElementById('navMenu');
-    ham.addEventListener('click', () => menu.classList.toggle('open'));
-    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+// Nav scroll
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 30));
 
-    // Scroll reveal
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+// Hamburger (basic: scroll to section when nothing else)
+document.getElementById('ham').addEventListener('click', () => {
+  document.querySelector('.nav-links').style.display =
+    getComputedStyle(document.querySelector('.nav-links')).display === 'none' ? 'flex' : 'none';
+});
 
-    // Form
-    function handleForm(e) {
-      e.preventDefault();
-      const btn = document.getElementById('fsub');
-      btn.textContent = 'Enviando...';
-      btn.disabled = true;
-      setTimeout(() => {
-        btn.textContent = '✓ Mensaje enviado con éxito';
-        btn.style.background = 'linear-gradient(135deg, #06D6A0, #00B4D8)';
-        setTimeout(() => {
-          btn.textContent = 'Enviar mensaje →';
-          btn.disabled = false;
-          btn.style.background = '';
-          e.target.reset();
-        }, 3500);
-      }, 1000);
-    }
-  </script>
+// Reveal
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), {threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const btn = document.getElementById('fsub');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = 'Enviando…';
+  setTimeout(() => {
+    btn.innerHTML = '✓ Mensaje enviado';
+    btn.style.background = 'var(--accent)';
+    setTimeout(() => {
+      btn.innerHTML = orig; btn.disabled = false; btn.style.background=''; e.target.reset();
+    }, 2800);
+  }, 900);
+});
+</script>
 </body>
 </html>
